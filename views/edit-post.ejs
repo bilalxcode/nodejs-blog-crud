@@ -1,0 +1,128 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Add new post</title>
+  </head>
+  <body>
+    <header>
+      <h1>add new post</h1>
+    </header>
+    <main>
+      <section>
+        <article>
+          <form action="/new-post"  method="POST">
+            <label for="title">Title</label>
+            <input type="text" name="title" required  placeholder="Title of the blog"/>
+<Br></Br>
+            <label for="content">content</label>
+            <textarea
+              name="content"
+              rows="20"
+              cols="90"
+              required
+              placeholder="Content of the blog"
+            ></textarea>
+            <Br></Br>
+
+            <!-- <a href="/">Add post</a> -->
+<!-- <button type="submit">Add Post</button>
+
+          </form>
+
+
+        </article>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2023 Our Blog. All rights reserved.</p>
+    </footer>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Edit Post</title>
+  </head>
+  <body>
+    <header>
+      <h1 style="text-align: center">Edit post</h1>
+    </header>
+    <main>
+      <section>
+        <article style="max-width: 600px; margin: 0 auto">
+          <form
+            action="/edit-post/<%= blog.id %>"
+            method="POST"
+            style="
+              background-color: #f7f7f7;
+              padding: 20px;
+              border-radius: 5px;
+              box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            "
+          >
+            <label
+              for="title"
+              style="display: block; margin-bottom: 5px; font-weight: bold"
+              >Title</label
+            >
+            <input
+              type="text"
+              name="title"
+              required
+              value="<%= blog.title %>"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            />
+            <label
+              for="content"
+              style="display: block; margin-bottom: 5px; font-weight: bold"
+              >Content</label
+            >
+            <textarea
+              name="content"
+              rows="8"
+              required
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+<%= blog.content %></textarea
+            >
+
+            <button
+              type="submit"
+              style="
+                display: inline-block;
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 20px;
+
+                padding: 10px 20px;
+                background-color: #333;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+              "
+            >
+              Update
+            </button>
+          </form>
+        </article>
+      </section>
+    </main>
+    <footer style="text-align: center; margin-top: 20px">
+      <p>&copy; 2023 Our Blog. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
