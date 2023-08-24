@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login to Our Blog</title>
+  </head>
+  <body>
+    <header
+      style="text-align: center; background-color: #f0f0f0; padding: 10px"
+    >
+      <h1 style="color: #333">Login to Our Blog</h1>
+      <% if (errorMessage) { %>
+      <div class="error-message" style="color: #ff0000">
+        <%= errorMessage %>
+      </div>
+      <% } %>
+    </header>
+    <main>
+      <section style="max-width: 400px; margin: 0 auto">
+        <form
+          action="/login"
+          method="POST"
+          style="
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <label
+            for="email"
+            style="
+              display: block;
+              font-size: 16px;
+              color: #333;
+              margin-bottom: 10px;
+            "
+          >
+            Username:
+          </label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            style="
+              width: 100%;
+              padding: 10px;
+              font-size: 16px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              margin-bottom: 20px;
+            "
+          />
+          <label
+            for="password"
+            style="
+              display: block;
+              font-size: 16px;
+              color: #333;
+              margin-bottom: 10px;
+            "
+          >
+            Password:
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            style="
+              width: 100%;
+              padding: 10px;
+              font-size: 16px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              margin-bottom: 20px;
+            "
+          />
+          <button
+            type="submit"
+            style="
+              display: block;
+              width: 100%;
+              padding: 10px;
+              background-color: #333;
+              color: #fff;
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              cursor: pointer;
+              transition: background-color 0.3s;
+            "
+          >
+            Login
+          </button>
+        </form>
+      </section>
+    </main>
+    <footer
+      style="text-align: center; background-color: #f0f0f0; padding: 10px"
+    >
+      <p style="color: #666">&copy; 2023 Our Blog. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

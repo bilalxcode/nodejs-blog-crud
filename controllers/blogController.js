@@ -1,14 +1,104 @@
 const Blog = require("../models/blogModel");
 
 const blogDb = require("../models/blogs");
+const userDb = require("../models/userSchema");
+
+exports.isAuth = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/");
+  }
+  next();
+};
+
+exports.firstPage = (req, res, next) => {
+  res.render("firstPage");
+  // req.session.isLoggedIn = true;
+};
+
+exports.login = (req, res, next) => {
+  res.render("login", { errorMessage: req.flash("error") });
+
+  // res.render("login");
+};
+
+exports.postLogin = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  userDb
+    .findOne({ email: email, password: password })
+    .then((user) => {
+      if (!user) {
+        console.log("email is " + email);
+        console.log("Failed to login");
+        req.flash("error", "Invalid Email or Password");
+        return res.redirect("/login");
+      } else {
+        req.session.isLoggedIn = true;
+        console.log("Session created");
+
+        return res.redirect("/home");
+      }
+    })
+    .catch((error) => {
+      // Handle any errors that occur during the database query
+      console.error("Error while checking user:", error);
+      return res.status(500).send("Internal Server Error");
+    });
+};
+
+exports.signup = (req, res, next) => {
+  res.render("signup", { errorMessage: req.flash("error") });
+};
+
+exports.postSignUp = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const newUser = new userDb({
+    email: email,
+    password: password,
+  });
+
+  userDb
+    .findOne({ email: email })
+    .then((user) => {
+      if (user) {
+        req.flash("error", "Email already taken");
+        return res.render("signup", { errorMessage: req.flash("error") });
+      } else {
+        newUser
+          .save()
+          .then(() => {
+            console.log("New User added successfully");
+            res.redirect("/login");
+          })
+          .catch((error) => {
+            console.error("Error adding new User:", error);
+            res.redirect("/signup");
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error checking user:", error);
+      res.redirect("/signup");
+    });
+};
+
+exports.logout = (req, res, next) => {
+  console.log("logout working");
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+    } else {
+      console.log("Session destroyed");
+    }
+    res.redirect("/"); // Redirect the user to a different page after logout
+  });
+  // res.render("home");
+};
 
 exports.welcome = (req, res, next) => {
-  // Blog.fetchAll((posts) => {
-  //   res.render("home", { posts: posts });
-  // });
-
   blogDb.find().then((blogs) => {
-    console.log(blogs);
     res.render("home", { posts: blogs });
   });
 };
@@ -34,15 +124,15 @@ exports.addNewBlog = (req, res, next) => {
     .save()
     .then(() => {
       console.log("New blog added successfully");
-      res.redirect("/");
+      res.redirect("/home");
     })
     .catch((error) => {
       console.error("Error adding new blog:", error);
       // Handle the error as needed
-      res.redirect("/");
+      res.redirect("/home");
     });
 
-  res.redirect("/");
+  res.redirect("/home");
 };
 
 exports.deletePost = (req, res, next) => {
@@ -57,7 +147,7 @@ exports.deletePost = (req, res, next) => {
       console.log("product updated");
       res.render("home", { posts: post });
     });
-  res.redirect("/");
+  res.redirect("/home");
 };
 
 exports.editPost = (req, res, next) => {
@@ -76,7 +166,7 @@ exports.editPost = (req, res, next) => {
     })
     .catch((error) => {
       console.error("Error fetching post:", error);
-      res.redirect("/");
+      res.redirect("/home");
     });
 };
 
@@ -116,10 +206,10 @@ exports.updatePost = (req, res, next) => {
     })
     .then(() => {
       console.log("Blog updated successfully.");
-      res.redirect("/");
+      res.redirect("/home");
     })
     .catch((err) => {
       console.log(err);
-      res.redirect("/"); // Redirect even if there's an error
+      res.redirect("/home"); // Redirect even if there's an error
     });
 };
