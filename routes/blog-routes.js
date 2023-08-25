@@ -17,6 +17,15 @@ router.get("/logout", blogController.logout);
 router.post("/logout", blogController.logout);
 
 router.get("/home", blogController.isAuth, blogController.welcome);
+router.get("/allBLogs", blogController.isAuth, blogController.allBlogs);
+router.get(
+  "/category/:category",
+  blogController.isAuth,
+  blogController.foodBlogs
+);
+
+router.get("/myBlogs", blogController.isAuth, blogController.myBlogs);
+
 router.post("/home", blogController.isAuth, blogController.welcome);
 
 router.get("/new-post", blogController.isAuth, blogController.newPost);

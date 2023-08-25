@@ -1,44 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-    <title>Add new post</title>
-  </head>
-  <body>
-    <header>
-      <h1>add new post</h1>
-    </header>
-    <main>
-      <section>
-        <article>
-          <form action="/new-post"  method="POST">
-            <label for="title">Title</label>
-            <input type="text" name="title" required  placeholder="Title of the blog"/>
-<Br></Br>
-            <label for="content">content</label>
-            <textarea
-              name="content"
-              rows="20"
-              cols="90"
-              required
-              placeholder="Content of the blog"
-            ></textarea>
-            <Br></Br>
-
-            <!-- <a href="/">Add post</a> -->
-<!-- <button type="submit">Add Post</button>
-
-          </form>
-
-
-        </article>
-      </section>
-    </main>
-    <footer>
-      <p>&copy; 2023 Our Blog. All rights reserved.</p>
-    </footer>
-  </body>
-</html> -->
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -60,6 +19,7 @@
               border-radius: 5px;
               box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
             "
+            enctype="multipart/form-data"
           >
             <label
               for="title"
@@ -79,6 +39,44 @@
                 margin-bottom: 10px;
               "
             />
+            <label
+              for="category"
+              style="display: block; margin-bottom: 5px; font-weight: bold"
+              >Category</label
+            >
+            <select
+              name="category"
+              required
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              <option value="" disabled selected>Select a category</option>
+              <option value="food">Food</option>
+              <option value="tech">Tech</option>
+              <option value="travel">Travel</option>
+            </select>
+            <label
+              for="image"
+              style="font-weight: bold; font-size: 16px; color: #333"
+              >Image</label
+            >
+            <input
+              type="file"
+              name="image"
+              style="
+                margin: 10px 0px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+              required
+            />
+
             <label
               for="content"
               style="display: block; margin-bottom: 5px; font-weight: bold"

@@ -1,5 +1,5 @@
 const Blog = require("../models/blogModel");
-
+const mongoose = require("mongoose");
 const blogDb = require("../models/blogs");
 const userDb = require("../models/userSchema");
 
@@ -34,6 +34,8 @@ exports.postLogin = (req, res, next) => {
         return res.redirect("/login");
       } else {
         req.session.isLoggedIn = true;
+        req.session.userId = user._id;
+
         console.log("Session created");
 
         return res.redirect("/home");
@@ -103,28 +105,68 @@ exports.welcome = (req, res, next) => {
   });
 };
 
+exports.allBlogs = (req, res, next) => {
+  blogDb.find().then((blogs) => {
+    res.render("allBLogs", { posts: blogs });
+  });
+};
+
+exports.myBlogs = (req, res, next) => {
+  const userId = req.session.userId;
+
+  blogDb.find({ userId: userId }).then((blogs) => {
+    res.render("myBlogs", { posts: blogs });
+  });
+};
+
+exports.foodBlogs = (req, res, next) => {
+  const categoryFilter = req.params.category;
+
+  let query = {};
+  if (categoryFilter === "food") {
+    query = { category: "food" };
+  } else if (categoryFilter === "tech") {
+    query = { category: "tech" };
+  } else if (categoryFilter === "travel") {
+    query = { category: "travel" };
+  }
+
+  console.log(categoryFilter);
+  blogDb.find(query).then((blogs) => {
+    res.render("filteredBlogs", { posts: blogs, categoryFilter });
+  });
+};
+
 exports.newPost = (req, res, next) => {
   res.render("new-post");
 };
 
+const path = require("path");
+
 exports.addNewBlog = (req, res, next) => {
+  console.log("image");
+
   const title = req.body.title;
   const content = req.body.content;
-  const blog1 = new Blog(title, content);
+  const category = req.body.category;
+  const image = req.file;
+  const userId = req.session.userId;
 
-  blog1.save();
+  const imageURL = "images/" + path.basename(image.path); // Construct the relative path
 
   const newBlog = new blogDb({
     title: title,
     content: content,
+    category: category,
+    image: imageURL,
+    userId: userId,
   });
 
-  // Save the new blog entry to the database
   newBlog
     .save()
     .then(() => {
       console.log("New blog added successfully");
-      res.redirect("/home");
+      // res.redirect("/home");
     })
     .catch((error) => {
       console.error("Error adding new blog:", error);
@@ -170,46 +212,52 @@ exports.editPost = (req, res, next) => {
     });
 };
 
-// exports.updatePost = (req, res, next) => {
-//   const postId = req.params.id;
-//   const updatedTitle = req.body.title;
-//   const updatedContent = req.body.content;
-
-//   blogDb
-//     .findById(postId)
-//     .then((blog) => {
-//       blog.title = updatedTitle;
-//       blog.content = updatedContent;
-//       return blog.save();
-//       res.redirect("/");
-//     })
-//     // .then((post) => {
-//     //   console.log("product updated");
-//     //   res.render("home", { posts: post });
-//     // })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// };
-
 exports.updatePost = (req, res, next) => {
   const postId = req.params.id;
   const updatedTitle = req.body.title;
   const updatedContent = req.body.content;
+  const updatedCategory = req.body.category;
+  const updatedImage = req.file;
+  console.log(updatedImage);
 
-  blogDb
-    .findById(postId)
-    .then((blog) => {
-      blog.title = updatedTitle;
-      blog.content = updatedContent;
-      return blog.save();
-    })
-    .then(() => {
-      console.log("Blog updated successfully.");
-      res.redirect("/home");
-    })
-    .catch((err) => {
-      console.log(err);
-      res.redirect("/home"); // Redirect even if there's an error
-    });
+  if (updatedImage) {
+    const imageURL = "images/" + path.basename(updatedImage.path); // Construct the relative path
+
+    blogDb
+      .findById(postId)
+      .then((blog) => {
+        blog.title = updatedTitle;
+        blog.content = updatedContent;
+        blog.category = updatedCategory;
+        blog.image = imageURL;
+        return blog.save();
+      })
+      .then(() => {
+        console.log("Blog updated successfully with image also updated.");
+        res.redirect("/myBlogs");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect("/home"); // Redirect even if there's an error
+      });
+  } else {
+    // Handle the case where there's no updated image
+    // You might want to adjust the logic here based on your requirements
+    blogDb
+      .findById(postId)
+      .then((blog) => {
+        blog.title = updatedTitle;
+        blog.content = updatedContent;
+        blog.category = updatedCategory;
+        return blog.save();
+      })
+      .then(() => {
+        console.log("Blog updated successfully without updating image.");
+        res.redirect("/myBlogs");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.redirect("/home"); // Redirect even if there's an error
+      });
+  }
 };
