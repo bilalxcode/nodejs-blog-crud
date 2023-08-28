@@ -2,7 +2,9 @@ const Blog = require("../models/blogModel");
 const mongoose = require("mongoose");
 const blogDb = require("../models/blogs");
 const userDb = require("../models/userSchema");
-
+const stripe = require("stripe")(
+  "sk_test_51Nk18qCVtk9qc81A5lKBuslEdlf1hquSfQmmFAQBhpJOMhF0b6Ahm87touepu5iOCDuKlKvwxWDEEuxT3ra5ceYv00egr52yl4"
+);
 exports.isAuth = (req, res, next) => {
   if (!req.session.isLoggedIn) {
     return res.redirect("/");
@@ -105,10 +107,33 @@ exports.welcome = (req, res, next) => {
   });
 };
 
+const ITEMS_PER_PAGE = 1;
+
 exports.allBlogs = (req, res, next) => {
-  blogDb.find().then((blogs) => {
-    res.render("allBLogs", { posts: blogs });
-  });
+  const page = +req.query.page || 1;
+  let totalItems;
+
+  blogDb
+    .find()
+    .countDocuments()
+    .then((numProducts) => {
+      totalItems = numProducts;
+      return blogDb
+        .find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
+    .then((blogs) => {
+      res.render("allBLogs", {
+        posts: blogs,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+      });
+    });
 };
 
 exports.myBlogs = (req, res, next) => {
@@ -136,12 +161,38 @@ exports.foodBlogs = (req, res, next) => {
     res.render("filteredBlogs", { posts: blogs, categoryFilter });
   });
 };
+exports.pro = (req, res, next) => {
+  stripe.checkout.sessions
+    .create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: "price_1Nk1pvCVtk9qc81ACJW68UgU", // Replace with the actual price ID from your Stripe Dashboard
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: req.protocol + "://" + req.get("host") + "/checkout/success",
+      cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+    })
+    .then((session) => {
+      res.render("pro", { sessionId: session.id });
+    });
+};
+exports.success = (req, res, next) => {
+  res.render("success");
+};
+
+exports.fail = (req, res, next) => {
+  res.render("fail");
+};
 
 exports.newPost = (req, res, next) => {
   res.render("new-post");
 };
 
 const path = require("path");
+const session = require("express-session");
 
 exports.addNewBlog = (req, res, next) => {
   console.log("image");

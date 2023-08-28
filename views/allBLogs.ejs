@@ -15,6 +15,28 @@
       .blog-card:hover {
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
       }
+      .pagination {
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .pagination a {
+        text-decoration: none;
+        color: #31785e;
+        padding: 0.5rem;
+        border: 1px solid #31785e;
+        margin: 0 1rem;
+      }
+
+      .pagination a:hover,
+      .pagination a:active {
+        background: #00695c;
+        color: rgb(242, 255, 0);
+      }
+      .pagination a.active {
+        background: #00695c;
+        color: rgb(242, 255, 0);
+      }
     </style>
   </head>
   <body>
@@ -23,8 +45,10 @@
         style="
           border-radius: 5px;
           padding: 10px 15px;
-          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset,
+            rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
           background-color: #cae8dd;
+          background: linear-gradient(180deg, #cae8dd 0%, #ffffff 90.21%);
         "
       >
         <nav
@@ -48,6 +72,9 @@
               <a href="/myBlogs" style="text-decoration: none; color: #333"
                 >My Blogs</a
               >
+            </li>
+            <li>
+              <a href="/pro" style="text-decoration: none; color: #333">Pro+</a>
             </li>
             <li>
               <a href="/logout" style="text-decoration: none; color: #333"
@@ -88,46 +115,25 @@
           <p style="font-size: 14px; font-weight: bold; color: #888">
             Category: <%= post.category %>
           </p>
-
-          <!-- <a
-            style="
-              display: inline-block;
-              text-align: center;
-              margin-top: 20px;
-              margin-bottom: 20px;
-
-              padding: 10px 20px;
-              background-color: #333;
-              color: #fff;
-              text-decoration: none;
-              border-radius: 5px;
-              transition: background-color 0.3s;
-            "
-            href="/edit-post/<%= post.id %>"
-            class="card-button"
-            >Edit</a
-          >
-          <a
-            style="
-              display: inline-block;
-              text-align: center;
-              margin-top: 20px;
-              margin-bottom: 20px;
-
-              padding: 10px 20px;
-              background-color: #333;
-              color: #fff;
-              text-decoration: none;
-              border-radius: 5px;
-              transition: background-color 0.3s;
-            "
-            href="/delete-post/<%= post.id %>"
-            class="card-button"
-            >Delete</a
-          > -->
         </div>
 
         <% } %>
+        <div class="pagination">
+          <% if (currentPage != 1 && previousPage!=1){%>
+          <a href="/allBLogs?page=1">1</a> <%}%> <% if(hasPreviousPage){%>
+
+          <a href="/allBLogs?page=<%= previousPage %>"><%=previousPage%> </a>
+          <%}%>
+          <a href="/allBLogs?page=<%= currentPage %>" class="active"
+            ><%=currentPage%>
+          </a>
+          <% if(hasNextPage){%>
+
+          <a href="/allBLogs?page=<%= nextPage %>"><%=nextPage%> </a>
+          <%}%> <% if(lastPage!==currentPage && nextPage !==lastPage){%>
+          <a href="/allBLogs?page=<%= lastPage %>"><%=lastPage%> </a>
+          <%}%>
+        </div>
 
         <div style="text-align: center">
           <a

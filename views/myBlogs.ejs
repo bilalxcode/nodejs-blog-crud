@@ -15,6 +15,24 @@
       .blog-card:hover {
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
       }
+      .pagination {
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      .pagination a {
+        text-decoration: none;
+        color: #31785e;
+        padding: 0.5rem;
+        border: 1px solid #31785e;
+        margin: 0 1rem;
+      }
+
+      .pagination a:hover,
+      .pagination a:active {
+        background: #cae8dd;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -23,8 +41,10 @@
         style="
           border-radius: 5px;
           padding: 10px 15px;
-          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset,
+            rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
           background-color: #cae8dd;
+          background: linear-gradient(180deg, #cae8dd 0%, #ffffff 90.21%);
         "
       >
         <nav
@@ -44,9 +64,14 @@
               >
             </li>
             <li>
-              <a href="/allBLogs" style="text-decoration: none; color: #333"
+              <a
+                href="/allBLogs?page=1"
+                style="text-decoration: none; color: #333"
                 >View All Blogs</a
               >
+            </li>
+            <li>
+              <a href="/pro" style="text-decoration: none; color: #333">Pro+</a>
             </li>
 
             <li>
@@ -125,6 +150,7 @@
             >Delete</a
           >
         </div>
+
         <% } %>
 
         <div style="text-align: center">
